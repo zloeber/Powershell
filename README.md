@@ -7,12 +7,12 @@ Where possible I've attempted to give credit where credit is due but if I've re-
 ##Description
 This repository is broken down in to several broad areas which are subject to change. Currently I've included the following script directories:
 
-*Active Directory
-*Exchange
-*Lync
-*OS
-*SQL
-*Supplemental
+* Active Directory
+* Exchange
+* Lync
+* OS
+* SQL
+* Supplemental
 
 The general mindset behind much of this code is to eliminate, as much as possible, outside dependencies and modules. Each function is mostly self sustaining. Where functions are not self sustaining I try to include the requirements inline to prevent complexity. At a later date I may look to implement some kind of automatic dependency resolution preparation script.
 
