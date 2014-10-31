@@ -19,9 +19,8 @@ The general mindset behind much of this code is to eliminate, as much as possibl
 ##Other Information
 **Author:** Zachary Loeber
 
-**Sites:** www.the-little-things.net
-
-       https://github.com/zloeber/Powershell
+**Website:** www.the-little-things.net
+**Github:** https://github.com/zloeber/Powershell
 
 ##Other credits:
 [Markdown-Editor](https://github.com/jbt/markdown-editor)
