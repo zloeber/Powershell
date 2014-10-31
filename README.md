@@ -20,6 +20,7 @@ The general mindset behind much of this code is to eliminate, as much as possibl
 **Author:** Zachary Loeber
 
 **Website:** www.the-little-things.net
+
 **Github:** https://github.com/zloeber/Powershell
 
 ##Other credits:
