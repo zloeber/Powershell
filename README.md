@@ -17,8 +17,10 @@ This repository is broken down in to several broad areas which are subject to ch
 The general mindset behind much of this code is to eliminate, as much as possible, outside dependencies and modules. Each function is mostly self sustaining. Where functions are not self sustaining I try to include the requirements inline to prevent complexity. At a later date I may look to implement some kind of automatic dependency resolution preparation script.
 
 ##Other Information
-Author: Zachary Loeber
-Sites: www.the-little-things.net
+**Author:** Zachary Loeber
+
+**Sites:** www.the-little-things.net
+
        https://github.com/zloeber/Powershell
 
 ##Other credits:
