@@ -1,9 +1,33 @@
 ﻿Function Add-UserToLoginAsBatch ($UserID) {
-    # Code mildy modified from http://www.morgantechspace.com/2014/03/Set-Logon-as-batch-job-rights-to-User-by-Powershell-CSharp-CMD.html
+    <#
+    .SYNOPSIS
+    When run administratively this will add a user to the local system's login as batch job rights security policy.
+    .DESCRIPTION
+    When run administratively this will add a user to the local system's login as batch job rights security policy.
+    .PARAMETER UserID
+    User ID to add to the local system's login as batch job rights security policy.
+    .LINK
+    http://www.the-little-things.net   
+    .NOTES
+    Version:
+        1.0.0 - Initial release
+    Author:
+        Zachary Loeber
+    Respect: 
+        Code mildy modified from 
+        http://www.morgantechspace.com/2014/03/Set-Logon-as-batch-job-rights-to-User-by-Powershell-CSharp-CMD.html
+
+    .EXAMPLE
+    Add-UserToLoginAsBatch 'test.user'
+
+    Description
+    -----------
+    Adds the local user test.user to the login as batch job rights on the local machine.
+    #>
+    
     $CSharpCode = @'
     using System;
-    using System.Collections.Generic;
-    using System.Globalization;
+    // using System.Globalization;
     using System.Text;
     using System.Runtime.InteropServices;
     public class LsaWrapper
@@ -212,12 +236,11 @@
     }
 '@
     try {
-        Add-Type -ErrorAction Stop -Language:CSharpVersion3 -TypeDefinition $CSharpCode # -Namespace 'LocalLoginBatchRights'
+        Add-Type -ErrorAction Stop -Language:CSharpVersion3 -TypeDefinition $CSharpCode
     }
     catch {
         Write-Error $_.Exception.Message
         break
     }
-    #[LocalLoginBatchRights]::GrantUserLogonAsBatchJob($UserID)
     [AddUserToLoginAsBatch]::GrantUserLogonAsBatchJob($UserID)
 }
