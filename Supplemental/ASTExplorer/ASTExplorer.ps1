@@ -94,8 +94,8 @@ function AddChildNode($child, $nodeList) {
     # Recursively add the current nodes children
     PopulateNode $child $childNode.Items
 
-    # We want the tree fully expanded after construction
-    $childNode.ExpandSubtree()
+    # If we want the tree fully expanded after construction
+    # $childNode.ExpandSubtree()
 }
 
 # A function invoked when a node in the tree view is selected.
@@ -130,16 +130,14 @@ function OnAfterSelect {
     }
 
     $startOffset = $selectedObject.Extent.StartOffset - $script:inputObjectStartOffset
+    $startLine = $selectedObject.Extent.StartLineNumber
     $endOffset = $selectedObject.Extent.EndOffset - $script:inputObjectStartOffset
-
-    $script:scriptView.SelectionStart = $startOffset
-    $script:scriptView.SelectionLength = $endOffset - $startOffset
-    $script:scriptView.Select($startOffset,$endOffset - $startOffset)
 
     # Need to do this at least once for some reason for the IsInactiveSelectionHighlightEnabled xaml property to work properly
     $script:scriptView.Focus()
+    $script:scriptView.SelectionStart = $startOffset
+    $script:scriptView.SelectionLength = $endOffset - $startOffset
     $script:treeView.Focus()
-
 }
 
 function LoadASTData {
@@ -172,7 +170,15 @@ $CurrentScriptFile = ''
         </Grid.ColumnDefinitions>
         <TreeView x:Name="treeView" Margin="10,10,0,5">
         </TreeView>
-        <TextBox x:Name="scriptView" SelectionBrush="Pink" IsInactiveSelectionHighlightEnabled="True"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" IsReadOnly="True" Grid.Column="1" Margin="0,10,10.4,34.2" Grid.RowSpan="2" TextWrapping="Wrap">
+        <TextBox x:Name="scriptView"  SelectionBrush="Pink" 
+                 IsInactiveSelectionHighlightEnabled="True"  
+                 VerticalScrollBarVisibility="Auto" 
+                 HorizontalScrollBarVisibility="Auto" 
+                 IsReadOnly="True" Grid.Column="1" 
+                 Margin="0,10,10.4,34.2" Grid.RowSpan="2" 
+                 TextWrapping="NoWrap" 
+                 IsReadOnlyCaretVisible="True"
+                  FocusManager.IsFocusScope="True">
             <TextBox.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}">Pink</SolidColorBrush>
             </TextBox.Resources>
@@ -243,6 +249,11 @@ $hyperlinkHome.add_RequestNavigate({
 $treeView.add_SelectedItemChanged({ 
     OnAfterSelect $script:treeView.SelectedItem
 })
+
+#$scriptView.add_SelectionChanged({ 
+#    $this.ScrollToLine($script:treeView.SelectedItem.Tag.Extent.StartLineNumber)
+#})
+
 
 #endregion
 
