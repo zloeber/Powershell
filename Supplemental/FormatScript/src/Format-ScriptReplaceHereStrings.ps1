@@ -23,6 +23,8 @@
 
        Version History
        1.0.0 - Initial release
+       1.0.1 - Fixed some replacements based on if the string is expandable or not.
+             - Changed output to be all one assignment rather than multiple assignments
     #>
     [CmdletBinding()]
     param(
@@ -35,8 +37,10 @@
         $Tokens = $null
         $FunctionName = $MyInvocation.MyCommand.Name
         Write-Verbose "$($FunctionName): Begin."
-        function EscapeChars ([string]$line) {
-            $line -replace '`r','``r' -replace '`n','``n'
+        function EscapeChars ([string]$line, [string]$linetype = "'") {
+            if ($linetype -eq "'") {
+                $line -replace "'","''"
+            }
         }
     }
     process {
@@ -61,11 +65,9 @@
                 switch ($token.Kind) {
                     'HereStringExpandable' {
                         $NewStringOp = '"'
-                        $CloseStringOp = '`r`n"'
                     }
                     default {
                         $NewStringOp = "'"
-                        $CloseStringOp = "' + " + '"`r`n"'
                     }
                 }
                 $HereStringVar = $tokens[$t - 2].Text
@@ -73,9 +75,9 @@
                 $RemoveStart = $tokens[$t - 2].Extent.StartOffset
                 $RemoveEnd = $Token.Extent.EndOffset - $RemoveStart
                 $HereStringText = @($Token.Value -split "`r`n")
-                $CodeReplacement = $HereStringVar + ' ' + $HereStringAssignment + ' ' + $NewStringOp + (EscapeChars $HereStringText[0]) + $CloseStringOp + "`r`n"
+                $CodeReplacement = $HereStringVar + ' ' + $HereStringAssignment + ' ' + $NewStringOp + (EscapeChars $HereStringText[0], $NewStringOp) + $NewStringOp
                 for($t2 = 1; $t2 -le $HereStringText.Count; $t2++) {
-                    $CodeReplacement += $HereStringVar + ' += ' + $NewStringOp + (EscapeChars $HereStringText[$t2]) + $CloseStringOp + "`r`n"
+                    $CodeReplacement += ' + "`r`n" + ' + $NewStringOp + (EscapeChars $HereStringText[$t2], $NewStringOp) + $NewStringOp
                 }
                 $ScriptText = $ScriptText.Remove($RemoveStart,$RemoveEnd).Insert($RemoveStart,$CodeReplacement)
             }
