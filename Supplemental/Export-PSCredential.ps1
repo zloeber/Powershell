@@ -73,5 +73,3 @@
         throw 'Export-PSCredential: Save Failed!'
     }
 }
-
-Export-PSCredential
