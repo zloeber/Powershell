@@ -1,4 +1,4 @@
-﻿function Get-MailboxForwardAndRedirectRules {
+﻿function Get-MailboxForwardAndRedirectRule {
     <#
     .SYNOPSIS
     Retrieves a list of mailbox rules which forward or redirect email elsewhere.
@@ -9,14 +9,14 @@
     .PARAMETER MailboxObject
     One or more mailbox objects.
     .EXAMPLE
-    Get-MailboxForwardAndRedirectRules -MailboxName "Test User1"
+    Get-MailboxForwardAndRedirectRule -MailboxName "Test User1"
     
     Description
     -----------
     List test user1 forwarding and redirect rules.
 
     .EXAMPLE
-    Get-Mailbox -ResultSize Unlimited | Get-MailboxForwardAndRedirectRules
+    Get-Mailbox -ResultSize Unlimited | Get-MailboxForwardAndRedirectRule
     
     Description
     -----------
@@ -69,14 +69,14 @@
         foreach ($Mailbox in $Mailboxes) {
             $UserInfo = Get-User $Mailbox.DistinguishedName 
             Write-Verbose "$($FunctionName): Checking $($Mailbox.Name)"
-            Get-InboxRule -mailbox $Mailbox.DistinguishedName | Where {
+            Get-InboxRule -mailbox $Mailbox.DistinguishedName | Where-Object {
                     ($_.forwardto -ne $null) -or 
                     ($_.redirectto -ne $null) -or 
                     ($_.ForwardAsAttachmentTo -ne $null) -and 
                     ($_.ForwardTo -notmatch "EX:/") -and 
                     ($_.RedirectTo -notmatch "EX:/") -and 
                     ($_.ForwardAsAttachmentTo -notmatch "EX:/")} | 
-                Select @{n="Mailbox";e={($Mailbox.Name)}}, `
+                Select-Object @{n="Mailbox";e={($Mailbox.Name)}}, `
                        @{n="SAMAccountName";e={$UserInfo.SAMAccountName}}, `
                        @{n="ADAccountEnabled";e={-not ($UserInfo.UserAccountControl -match 'AccountDisabled')}}, `
                        @{n="DistinguishedName";e={($Mailbox.DistinguishedName)}}, `
