@@ -1,38 +1,39 @@
 ﻿function Export-PSCredential {
     <#
     .SYNOPSIS
-    Export credential to file.
+        Export credential to file.
     .DESCRIPTION
-    Export credential to file which is only able to be used on the system which it was created.
+        Export credential to file which is only able to be used on the system which it was created.
     .PARAMETER FilePath
-    File to export credentials.
+        File to export credentials.
     .PARAMETER UserName
-    Username for credential.
+        Username for credential.
     .PARAMETER Password
-    Password for credential.
+        Password for credential.
     .PARAMETER Domain
-    Optional domain for credential.
+        Optional domain for credential.
     .PARAMETER Creds
-    Pre-populated credential object.
+        Pre-populated credential object.
     .EXAMPLE
-    Export-PSCredential -FilePath c:\Temp\testcred.cred -Domain 'domain' -Password 'pass' -UserName 'user'
+        Export-PSCredential -FilePath c:\Temp\testcred.cred -Domain 'domain' -Password 'pass' -UserName 'user'
 
-    Description
-    -----------
-    Export the credentials of the domain user and password specified.
+        Description
+        -----------
+        Export the credentials of the domain user and password specified.
 
     .EXAMPLE
-    $Creds = Get-Credential
-    Export-PSCredential -Creds $Creds
+        $Creds = Get-Credential
+        Export-PSCredential -Creds $Creds
 
-    Description
-    -----------
-    Export the credentials of the $Creds input from user prompt.
+        Description
+        -----------
+        Export the credentials of the $Creds input from user prompt.
+
     .LINK
-    http://the-little-things.net/
+        http://the-little-things.net/
     .NOTES
-    Author:  Zachary Loeber
-    Created: 08/29/2104
+        Author:  Zachary Loeber
+        Created: 08/29/2104
     #>
     [CmdLetBinding(DefaultParameterSetName='Default')]
     param (
