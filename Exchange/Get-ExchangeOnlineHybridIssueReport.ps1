@@ -2,26 +2,26 @@
 This is meant to be run from an exchange on premise server that is part of a hybrid o365 configuration.
 
 This script produces the following results in some script variables for further use or processing:
-    1. $RemoteOnlyMailboxes
+1. $RemoteOnlyMailboxes
+
+All mailboxes which are found in the o365 tenant which are not found locally as 'remote mailboxes'. These may be on purpose 
+but may also experience issues with autodiscover and cross-premise delivery in a hybrid scenario
+
+2. $AliasMismatches
+
+Mailboxes in the environment with aliases which don't match their primary smtp address. I've personally had issues with 
+RemoteRoutingAddresses being incorrect in these cases. Maybe it was 'just me' though
     
-    All mailboxes which are found in the o365 tenant which are not found locally as 'remote mailboxes'. These may be on purpose 
-    but may also experience issues with autodiscover and cross-premise delivery in a hybrid scenario
-    
-    2. $AliasMismatches
-    
-    Mailboxes in the environment with aliases which don't match their primary smtp address. I've personally had issues with 
-    RemoteRoutingAddresses being incorrect in these cases. Maybe it was 'just me' though
-        
-    3. $MismatchedRemoteMailboxes
-    Remote mailboxes with RemoteRoutingAddresses which are not in your current federated domains list.
-    
-    4. $MigrationStatus
-    
-    A list of current remote move requests and their status on the o365 side. This is combined with the mailboxes on premise to try and 
-    get a full report of where we are in the migration process. Can be spit out to excel to make pretty charts for management on your migration status :)
-    
- 
-    Note: This script has only been tested with Exchange 2013 in a hybrid configuration.
+3. $MismatchedRemoteMailboxes
+Remote mailboxes with RemoteRoutingAddresses which are not in your current federated domains list.
+
+4. $MigrationStatus
+
+A list of current remote move requests and their status on the o365 side. This is combined with the mailboxes on premise to try and 
+get a full report of where we are in the migration process. Can be spit out to excel to make pretty charts for management on your migration status :)
+
+
+Note: This script has only been tested with Exchange 2013 in a hybrid configuration.
 #>
 
 # Connect to o365
