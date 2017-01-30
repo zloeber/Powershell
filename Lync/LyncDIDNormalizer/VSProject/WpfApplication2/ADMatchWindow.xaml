@@ -1,0 +1,47 @@
+﻿<Window x:Name="WindowADMatch"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DID to AD Matching" Height="533.6" Width="683.2">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="136*"/>
+            <RowDefinition Height="121*"/>
+        </Grid.RowDefinitions>
+        <DataGrid x:Name="datagridDIDs" Margin="10,3,9.8,29">
+            <DataGrid.ContextMenu>
+                <ContextMenu x:Name="dgContextMenu"  StaysOpen="true">
+                    <MenuItem Header="Copy All" x:Name="dgContextMenu_MenuItemCopyAllResults"/>
+                    <MenuItem Header="Copy Selected" x:Name="dgContextMenu_MenuItemCopySelectedResults"/>
+                    <MenuItem Header="Clear All" x:Name ="dgContextMenu_MenuItemClearAllResults"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Site" Binding="{Binding SiteName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Site Code" Binding="{Binding SiteCode}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Private" Binding="{Binding Private}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Local" Binding="{Binding Local}"></DataGridTextColumn>
+                <DataGridTextColumn Header="LineURI" Binding="{Binding LineURI}"></DataGridTextColumn>
+                <DataGridTextColumn Header="DDI" Binding="{Binding DDI}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Ext" Binding="{Binding Ext}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}"></DataGridTextColumn>
+                <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Sip Address" Binding="{Binding SipAddress}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Type" Binding="{Binding Type}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Notes" Binding="{Binding Notes}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Separator Height="12" Margin="9,0,10.8,0" VerticalAlignment="Top" Grid.Row="1"/>
+        <ScrollViewer Margin="10,33.6,9.8,38" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+            <TextBlock x:Name="txtblockWarnings" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="#FFFFFED2" IsManipulationEnabled="True" Height="244"/>
+        </ScrollViewer>
+        <TextBox x:Name="txtOU" TextWrapping="Wrap" Margin="183,0,86.8,3.4" IsEnabled="False" Height="21" VerticalAlignment="Bottom" TabIndex="6"/>
+        <Button x:Name="btnSelectOU" Content="Select OU" Margin="118,0,0,3.4" TabIndex="2" Height="21" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="60"/>
+        <Button x:Name="btnMatch" Content="Match Now" HorizontalAlignment="Right" Margin="0,0,11,3" Width="70.8" UseLayoutRounding="False" TabIndex="2" Height="21.2" VerticalAlignment="Bottom"/>
+        <Button x:Name="btnSaveDIDMatches" Content="Save" HorizontalAlignment="Left" Margin="65,0,0,3" Width="48" UseLayoutRounding="False" TabIndex="1" Height="21" VerticalAlignment="Bottom"/>
+        <Button x:Name="btnLoadDIDMatches" Content="Load" HorizontalAlignment="Left" Margin="12,0,0,3.4" Width="48" TabIndex="0" Height="21" VerticalAlignment="Bottom"/>
+        <Label Content="Information/Warnings" Margin="10,7.8,10.8,0" FontWeight="Bold" Grid.Row="1" Height="26" VerticalAlignment="Top"/>
+        <Button x:Name="btnExit" Content="Exit" Margin="0,0,9.8,10" UseLayoutRounding="False" TabIndex="4" Height="21.2" VerticalAlignment="Bottom" Grid.Row="1" IsCancel="True" HorizontalAlignment="Right" Width="70.8"/>
+
+    </Grid>
+</Window>

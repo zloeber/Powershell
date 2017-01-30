@@ -1,0 +1,5 @@
+"PrivateRange","SiteDialCode","DigitsStart","DIDEnd","DigitsEnd","MainNumber","DIDPrefix","DIDStart","LocalRange","SiteName"
+"False","10","5555","12223336666","6666","","1222333","12223335555","False","Site1"
+"False","10","6600","12224447000","7000","","1222444","12224446600","False","Site1"
+"True","10","1000","1100","1100","12223335555","","1000","False","Site1"
+"True","10","2000","2100","2100","12223335555","","2000","True","Site1"

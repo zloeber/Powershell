@@ -1,0 +1,13 @@
+c:\users\zachary\documents\visual studio 2013\Projects\WpfApplication2\WpfApplication2\bin\Debug\WpfApplication2.exe.config
+C:\Users\Zachary\Documents\Visual Studio 2013\Projects\WpfApplication2\WpfApplication2\obj\Debug\WpfApplication2.csprojResolveAssemblyReference.cache
+C:\Users\Zachary\Documents\Visual Studio 2013\Projects\WpfApplication2\WpfApplication2\obj\Debug\MainWindow.baml
+C:\Users\Zachary\Documents\Visual Studio 2013\Projects\WpfApplication2\WpfApplication2\obj\Debug\MainWindow.g.cs
+C:\Users\Zachary\Documents\Visual Studio 2013\Projects\WpfApplication2\WpfApplication2\obj\Debug\App.g.cs
+C:\Users\Zachary\Documents\Visual Studio 2013\Projects\WpfApplication2\WpfApplication2\obj\Debug\WpfApplication2_MarkupCompile.cache
+C:\Users\Zachary\Documents\Visual Studio 2013\Projects\WpfApplication2\WpfApplication2\obj\Debug\WpfApplication2.g.resources
+C:\Users\Zachary\Documents\Visual Studio 2013\Projects\WpfApplication2\WpfApplication2\obj\Debug\WpfApplication2.Properties.Resources.resources
+C:\Users\Zachary\Documents\Visual Studio 2013\Projects\WpfApplication2\WpfApplication2\obj\Debug\WpfApplication2.csproj.GenerateResource.Cache
+C:\Users\Zachary\Documents\Visual Studio 2013\Projects\WpfApplication2\WpfApplication2\bin\Debug\WpfApplication2.exe
+C:\Users\Zachary\Documents\Visual Studio 2013\Projects\WpfApplication2\WpfApplication2\bin\Debug\WpfApplication2.pdb
+C:\Users\Zachary\Documents\Visual Studio 2013\Projects\WpfApplication2\WpfApplication2\obj\Debug\WpfApplication2.exe
+C:\Users\Zachary\Documents\Visual Studio 2013\Projects\WpfApplication2\WpfApplication2\obj\Debug\WpfApplication2.pdb

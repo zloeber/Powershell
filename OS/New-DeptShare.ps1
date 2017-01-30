@@ -30,7 +30,7 @@ param(
     [Parameter(HelpMessage="Enter a share folder location.")]
     [string]$ShareLocalPath = 'D:\DeptShares\',
     [Parameter(HelpMessage="Enter an OU to create the new permission groups in.")]
-    [string]$ADGroupPath = 'OU=Permission,OU=Service Groups,DC=contoso,DC=com',
+    [string]$ADGroupPath = 'OU=SomeOU,DC=contoso,DC=com',
     [Parameter(HelpMessage="Enter a FQDN domain name")]
     [string]$FQDNDomain = 'contoso.com',
     [Parameter(HelpMessage="Enter a FQDN domain name")]
@@ -58,8 +58,8 @@ Write-Host -ForegroundColor Gray "Deny Group: $($DenyGroup)"
 $smbshares = (Get-SmbShare).Name
 $dfsfoldername = "\\$($FQDNDomain)\DeptShare\$($sharename)"
 $FullAccessGroups = @('Administrators',$FullAccessGroup)
-$dfscmd1 = 'dfsutil property sd grant \\<2>\DeptShare\<0> ISACA\<1>:F protect' -replace '<0>',$sharename -replace '<1>',$FullAccessGroup -replace '<2>',$FQDNDomain
-$dfscmd2 = 'dfsutil property sd grant \\<2>\DeptShare\<0> ISACA\<1>:RX protect' -replace '<0>',$sharename -replace '<1>',$ReadOnlyGroup -replace '<2>',$FQDNDomain
+$dfscmd1 = ('dfsutil property sd grant \\<2>\DeptShare\<0> ' + $ShortDomain + '\<1>:F protect') -replace '<0>',$sharename -replace '<1>',$FullAccessGroup -replace '<2>',$FQDNDomain
+$dfscmd2 = ('dfsutil property sd grant \\<2>\DeptShare\<0> ' + $ShortDomain + '\<1>:RX protect') -replace '<0>',$sharename -replace '<1>',$ReadOnlyGroup -replace '<2>',$FQDNDomain
 
 # Create Read-Only permission group if it doesn't already exist.
 try {
@@ -88,7 +88,7 @@ catch {
     New-ADGroup -Name $FullAccessGroup -SAMAccountName $FullAccessGroup -Description "Dept Share $ShareName - Full Access" -GroupCategory Security -Path $ADGroupPath -GroupScope Global
 }
 
-if ($smbshares -notcontains $share.NewShareName) {
+if ($smbshares -notcontains $ShareName) {
     Write-Host -ForegroundColor:Cyan "Attempting to create share: $($sharename)"
     Write-Host
     if (-not (Test-Path $sharepath)) {
@@ -112,12 +112,14 @@ if ($smbshares -notcontains $share.NewShareName) {
         #add the access permissions from the ACL variable
         set-ACL $sharepath $objACL
     }
+
     if (Test-Path $sharepath) {
         New-SmbShare -Name $sharename -Path $sharepath -FullAccess $FullAccessGroups -ReadAccess $ReadOnlyGroup -NoAccess $DenyGroup
     }
     else {
         Write-Host -ForegroundColor DarkMagenta "Unable to find Path: $($sharepath)"
     }
+    
     if (Test-Path $sharepath) {
         $dfsnfolder = Get-DfsnFolder $dfsfoldername -ErrorAction:Ignore
         if ($dfsnfolder -eq $null) {

@@ -1,4 +1,4 @@
-function Get-SharePermission {
+﻿function Get-SharePermission {
 <#
            .SYNOPSIS 
            This script will list all shares on a computer, and list all the share permissions for each share.

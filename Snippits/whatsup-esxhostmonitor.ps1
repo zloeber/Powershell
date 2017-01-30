@@ -1,4 +1,4 @@
-import-module CimCmdlets
+﻿import-module CimCmdlets
 
 # Get the credentials
 $VMuser = $Context.GetProperty("CredVMware:Username");

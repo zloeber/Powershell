@@ -23,9 +23,13 @@
     http://www.the-little-things.net   
     .NOTES
     Version
-        1.0.0 01/25/2016
+        1.0.0 - 01/25/2016
         - Initial release
-    Author      :   Zachary Loeber
+        1.0.1 - 06/14/2016
+        - Added o365 flag and associated logic.
+    
+    Author
+        Zachary Loeber
 
     .EXAMPLE
     Get-MailboxFullAccessPermission -MailboxName "Test User1" -Verbose
@@ -77,7 +81,7 @@
         [Parameter(ParameterSetName='AsString', Mandatory=$True, ValueFromPipeline=$True, Position=0, HelpMessage="Enter an Exchange mailbox name")]
         [string]$MailboxName,
         [Parameter(ParameterSetName='AsMailbox', Mandatory=$True, ValueFromPipeline=$True, Position=0, HelpMessage="Enter an Exchange mailbox name")]
-        [Microsoft.Exchange.Data.Directory.Management.Mailbox]$MailboxObject,
+        $MailboxObject,
         [Parameter(HelpMessage='Includes unresolved and other common full permission accounts.')]
         [switch]$ShowAll,
         [Parameter(HelpMessage="Additional user filters")]
@@ -87,10 +91,12 @@
         [Parameter(HelpMessage='Expands AD groups.')]
         [switch]$ExpandGroups,
         [Parameter(HelpMessage='Includes mailboxes with all full permissions filtered out.')]
-        [switch]$IncludeNullResults
+        [switch]$IncludeNullResults,
+        [Parameter(HelpMessage='Target o365.')]
+        [switch]$o365
     )
     begin {
-        $FunctionName = $FunctionName
+        $FunctionName = $($MyInvocation.MyCommand)
         Write-Verbose "$($FunctionName): Begin"
         $Mailboxes = @()
         if (-not $ShowAll) {
@@ -133,6 +139,7 @@
         Write-Verbose "$($FunctionName): Exceptions regex string - $exceptions"
     }
     process {
+        Write-Verbose "$($FunctionName): Parameter set used - $($PSCmdlet.ParameterSetName)"
         switch ($PSCmdlet.ParameterSetName) {
             'AsStringArray' {
                 try {
@@ -155,21 +162,29 @@
             $FullAccessUsers = @()
             
             # Get all the full access permissions on a mailbox where it is not set to 'denied'
-            $fullperms = @($Mailbox | Get-MailboxPermission | Where {($_.AccessRights -like "*FullAccess*") -and (-not $_.Deny)})
-            
+            $fullperms = @($Mailbox | Get-MailboxPermission | Where {('FullAccess' -in $_.AccessRights) -and (-not $_.Deny)})
+            Write-Verbose "$($FunctionName): Initial number of fullaccess permissions found - $($fullperms.count)"
+
             # If we have results then continume processing
             if ($fullperms.Count -gt 0) {
                 $fullperms | Foreach {
-                    # Foreach permission found see if it gets filtered out in our exception list.
-                    if ($_.User.RawIdentity -notmatch $Exceptions) {
+                    if ($o365) {
+                        $UserID = $_.User
+                    }
+                    else {
+                        $UserID = $_.User.RawIdentity
+                    }
+                    Write-Verbose "$($FunctionName): User with full permissions - $($UserID)"
+                    if ($UserID -notmatch $Exceptions) {
+                        Write-Verbose "$($FunctionName): Fullaccess permission not on exception list - $($UserID)"
                         if ($ExpandGroups) {
-                            if ($_.User.RawIdentity -match '^(.*\\)(.*)$') {
+                            if ($UserID -match '^(.*\\)(.*)$') {
                                 $domstring = $matches[1]
                                 $grpstring = $matches[2]
                             }
                             else {
                                 $domstring = ''
-                                $grpstring = $_.User.RawIdentity
+                                $grpstring = $UserID
                             }
                             
                             try {
@@ -180,8 +195,6 @@
                             }
                             if ($groupmembers -ne $null) {
                                 Write-Verbose "$($FunctionName): $grpstring is a group with $($groupmembers.count) members..."
-                                #foreach ($groupmember in $groupmembers) {
-                                
                                 ($groupmembers).SamAccountName | Foreach {
                                     $memberusername = "$($domstring)$($_)"
                                     if ($memberusername -notmatch $Exceptions) {
@@ -190,16 +203,17 @@
                                 }
                             }
                             else {
-                                Write-Verbose "$($FunctionName): $($_.User.RawIdentity) is a non-filtered user"
-                                $FullAccessUsers += $_.User.RawIdentity
+                                Write-Verbose "$($FunctionName): $($UserID) is a non-filtered user"
+                                $FullAccessUsers += $UserID
                             }
                         }
                         else {
-                            $FullAccessUsers += $_.User.RawIdentity
+                            $FullAccessUsers += $UserID
                         }
                     }
                 }
                 if (($FullAccessUsers.Count -gt 0) -or ($IncludeNullResults)) {
+                    Write-Verbose "$($FunctionName): Number of full access accounts found - $($FullAccessUsers.Count)"
                     $NewObjProp = @{
                         'Mailbox' = $Mailbox.Name
                         'MailboxEmail' = $Mailbox.PrimarySMTPAddress
@@ -218,6 +232,10 @@
                                 New-Object psobject -Property $NewObjProp
                             }
                         }
+                    }
+                    else {
+                        $NewObjProp.FullAccess = $FullAccessUsers
+                        New-Object psobject -Property $NewObjProp
                     }
                 }
                 else {
