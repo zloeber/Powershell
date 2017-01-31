@@ -1,32 +1,39 @@
 ﻿<#
     Quick report of ARM based Azure networking that includes:
+
     - Location (region)
         - Virtual Networks (region based!)
             - Subnets
                 - Associated NSGs
-                - Virtual Machines (Interfaces)
+                - Associated Interfaces (VMs)
         - Network Security Groups (and rule counts)
                 - Associated Subnets
         - Interfaces
         - Resource Groups
                 - Associated Interfaces
+                - Associated Availability Sets
 
     Note: Virtual Networks and interfaces may be associated with different resource groups!
 
     Author: Zachary Loeber
 #>
+Import-Module AzureRM
 Login-AzureRmAccount
-$sub = Set-AzureRmContext -SubscriptionId (Get-AzureRmSubscription | Out-GridView -Title "Pick A Location" -PassThru).subscriptionid
+$sub = Set-AzureRmContext -SubscriptionId (Get-AzureRmSubscription | Out-GridView -Title "Pick A Subscription" -PassThru).subscriptionid
 
 $AllNSGs= Get-AzureRmNetworkSecurityGroup
 $AllInts = Get-AzureRmNetworkInterface
 $AllLocations = Get-AzureRmLocation
 $SubnetIDToSubnetMap = @{}
 $IntIDToIntMap = @{}
+$VMIDToNameMap = @{}
 $AllInts | ForEach-Object {
     $IntIDToIntMap.($_.Id) = "$($_.Name) ($(($_.IPConfigurations).PrivateIpAddress -join ','))"
 }
 
+Get-AzureRmVM | Foreach-Object {
+    $VMIDToNameMap.($_.Id) = $_.Name
+}
 $Indent = 1
 Write-Output "Subscription: $($Sub.Subscription.SubscriptionName)"
 Write-Output ''
@@ -107,13 +114,27 @@ Foreach ($Location in $AllLocations) {
             Foreach ($RG in $RGsInLocation) {
                 Write-Output "$(' ' * ($Indent * 2))$($RG.ResourceGroupName)"
                 $AllIntsInRG = Get-AzureRmNetworkInterface -ResourceGroupName $RG.ResourceGroupName
-                
+                $AllASsInRG = Get-AzureRmAvailabilitySet -ResourceGroupName $RG.ResourceGroupName
                 # Interfaces in RG
                 if ($AllIntsInRG.count -gt 0) {
                     Write-Output "$(' ' * ($Indent * 3))Interfaces in this Group:"
                     Foreach ($Int in $AllIntsInRG) {
                         $IntIP = $Int[0].IpConfigurations[0].PrivateIpAddress
                         Write-Output "$(' ' * ($Indent * 4))$($Int.Name) ($($IntIP))"
+                    }
+                }
+
+                # Availability Sets in RG
+                if ($AllASsInRG.count -gt 0) {
+                    Write-Output "$(' ' * ($Indent * 3))Availability Sets in this Group:"
+                    Foreach ($AS in $AllASsInRG) {
+                        Write-Output "$(' ' * ($Indent * 4))$($AS.Name)"
+                        if (($AS.VirtualMachinesReferences).Count -gt 0) {
+                            Write-Output "$(' ' * ($Indent * 5))VMs in this Availability Set:"
+                            $AS.VirtualMachinesReferences | ForEach-Object {
+                                Write-Output "$(' ' * ($Indent * 6))$($VMIDToNameMap[$_.Id])"
+                            }
+                        }
                     }
                 }
             }
