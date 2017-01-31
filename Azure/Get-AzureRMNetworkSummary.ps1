@@ -12,6 +12,7 @@
         - Resource Groups
                 - Associated Interfaces
                 - Associated Availability Sets
+                - Associated Gateways
 
     Note: Virtual Networks and interfaces may be associated with different resource groups!
 
@@ -39,19 +40,19 @@ Write-Output "Subscription: $($Sub.Subscription.SubscriptionName)"
 Write-Output ''
 Foreach ($Location in $AllLocations) {
     $AllNSGInLocation = @($AllNSGs | Where-Object {$_.Location -eq $Location.Location})
-    $AllVNsInLocation = Get-AzureRmVirtualNetwork | Where {$_.Location -eq $Location.Location}
+    $AllVNsInLocation = @(Get-AzureRmVirtualNetwork | Where-Object {$_.Location -eq $Location.Location})
     $RGsInLocation = @(Get-AzureRmResourceGroup -Location $Location.Location)
     
     # Start Region Report
     if ( ($AllNSGInLocation.Count -gt 0) -or 
          ($RGsInLocation.Count -gt 0) -or 
          ($AllVNsInLocation.Count -gt 0) ) {
-        Write-Output "Azure Region: $($Location.Location)"
+        Write-Output "Azure Region: $($Location.DisplayName)"
         
         # Virtual Network Report
         if ($AllVNsInLocation.Count -gt 0) {
             Foreach ($VN in $AllVNsInLocation) {
-                Write-Host "$(' ' * ($Indent * 0))Virtual Network: $($VN.Name) ($(($VN.AddressSpace).AddressPrefixes -join ', '))"
+                Write-Output "$(' ' * ($Indent * 0))Virtual Network: $($VN.Name) ($(($VN.AddressSpace).AddressPrefixes -join ', '))"
 
                 # Subnet Report
                 if (($VN.Subnets).Count -gt 0) {
@@ -113,14 +114,29 @@ Foreach ($Location in $AllLocations) {
             Write-Output "$(' ' * ($Indent * 1))Resource Groups in Region:"
             Foreach ($RG in $RGsInLocation) {
                 Write-Output "$(' ' * ($Indent * 2))$($RG.ResourceGroupName)"
-                $AllIntsInRG = Get-AzureRmNetworkInterface -ResourceGroupName $RG.ResourceGroupName
-                $AllASsInRG = Get-AzureRmAvailabilitySet -ResourceGroupName $RG.ResourceGroupName
+                $AllIntsInRG = @(Get-AzureRmNetworkInterface -ResourceGroupName $RG.ResourceGroupName)
+                $AllASsInRG = @(Get-AzureRmAvailabilitySet -ResourceGroupName $RG.ResourceGroupName)
+                $AllGWsInRG = @(Get-AzureRmVirtualNetworkGateway -ResourceGroupName $RG.ResourceGroupName)
                 # Interfaces in RG
                 if ($AllIntsInRG.count -gt 0) {
                     Write-Output "$(' ' * ($Indent * 3))Interfaces in this Group:"
                     Foreach ($Int in $AllIntsInRG) {
                         $IntIP = $Int[0].IpConfigurations[0].PrivateIpAddress
                         Write-Output "$(' ' * ($Indent * 4))$($Int.Name) ($($IntIP))"
+                    }
+                }
+
+                # Gateways in RG
+                if ($AllGWsInRG.count -gt 0) {
+                    Write-Output "$(' ' * ($Indent * 3))Gateways in this Group:"
+                    Foreach ($GW in $AllGWsInRG) {
+                        Write-Output "$(' ' * ($Indent * 4))$($GW.Name)"
+                        if (($GW.IPConfigurations.Subnet).Count -gt 0) {
+                            Write-Output "$(' ' * ($Indent * 5))Associated Subnets:"
+                            Foreach ($SubnetID in ($GW.IPConfigurations.Subnet).ID) {
+                                Write-Output "$(' ' * ($Indent * 6))- $($SubnetIDToSubnetMap.$SubnetID)"
+                            }
+                        }
                     }
                 }
 
