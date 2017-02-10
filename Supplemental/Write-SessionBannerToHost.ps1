@@ -57,12 +57,12 @@
         }
 
         function Get-PIIPAddress {
-            $NetworkInterfaces = @([System.Net.NetworkInformation.NetworkInterface]::GetAllNetworkInterfaces() | Where {($_.OperationalStatus -eq 'Up')})
+            $NetworkInterfaces = @([System.Net.NetworkInformation.NetworkInterface]::GetAllNetworkInterfaces() | Where-Object {($_.OperationalStatus -eq 'Up')})
             $NetworkInterfaces | Foreach-Object {
-                $_.GetIPProperties() | Where {$_.GatewayAddresses} | Foreach-Object {
+                $_.GetIPProperties() | Where-Object {$_.GatewayAddresses} | Foreach-Object {
                     $Gateway = $_.GatewayAddresses.Address.IPAddressToString
                     $DNSAddresses = @($_.DnsAddresses | Foreach-Object {$_.IPAddressToString})
-                    $_.UnicastAddresses | Where {$_.Address -notlike '*::*'} | Foreach {
+                    $_.UnicastAddresses | Where-Object {$_.Address -notlike '*::*'} | Foreach-Object {
                         New-Object PSObject -Property @{
                             IP = $_.Address
                             Prefix = $_.PrefixLength
@@ -170,6 +170,9 @@
             } else {
                 $PSProcessElevated = 'FALSE'
             }
+        }
+        else {
+            # Code to determine if you are a root user or not...
         }
 
         if ($AttemptAutoFit) {
