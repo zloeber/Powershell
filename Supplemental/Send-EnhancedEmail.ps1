@@ -26,7 +26,7 @@
         'Body' = $EmailBody
     }
     if ($ForceAnonymous) {
-        $Pass = ConvertTo-SecureString –String 'anonymous' –AsPlainText -Force
+        $Pass = ConvertTo-SecureString -String 'anonymous' -AsPlainText -Force
         $Creds = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList 'NT AUTHORITY\ANONYMOUS LOGON', $pass
         $SendMailSplat.Credential = $creds
     }
