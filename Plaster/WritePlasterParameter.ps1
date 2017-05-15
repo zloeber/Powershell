@@ -5,11 +5,11 @@ A simple helper function to create a parameter xml block for plaster
 A simple helper function to create a parameter xml block for plaster.  This function
 is best used with an array of hashtables for rapid creation of a Plaster parameter
 block.
-.PARAMETER Name
+.PARAMETER ParameterName
 The plaster element name
-.PARAMETER Type
+.PARAMETER ParameterType
 The type of plater parameter. Can be either text, choice, multichoice, user-fullname, or user-email
-.PARAMETER Prompt
+.PARAMETER ParameterPrompt
 The prompt to be displayed
 .PARAMETER Default
 The default setting for this parameter
@@ -30,23 +30,23 @@ $choice2 = @{
     help = 'Do NOT Process this'
     value = 'false'
 }
+Write-PlasterParameter -ParameterName 'Editor' -ParameterType 'choice' -ParameterPrompt 'Choose your editor' -Default '0' -Store 'text' -Choices @($choice1,$choice2)
 
-Write-PlasterParameter -Name 'Editor' -type 'choice' -Prompt 'Choose your editor' -Default '0' -Store 'text' -Choices @($choice1,$choice2)
 .EXAMPLE
 $MyParams = @(
 @{
-    'Name' = "NugetAPIKey"
-    'Type' = "text"
-    'Prompt' = "Enter a PowerShell Gallery (aka Nuget) API key. Without this you will not be able to upload your module to the Gallery"
-    'Default' = ' '
+    ParameterName = "NugetAPIKey"
+    ParameterType = "text"
+    ParameterPrompt = "Enter a PowerShell Gallery (aka Nuget) API key. Without this you will not be able to upload your module to the Gallery"
+    Default = ' '
 },
 @{
-    'Name' = "OptionAnalyzeCode"
-    'Type' = "choice"
-    'Prompt' = "Use PSScriptAnalyzer in the module build process (Recommended for Gallery uploading)?"
-    'Default' = "0"
-    'Store' = "text"
-    'Choices' = @(
+    ParameterName = "OptionAnalyzeCode"
+    ParameterType = "choice"
+    ParameterPrompt = "Use PSScriptAnalyzer in the module build process (Recommended for Gallery uploading)?"
+    Default = "0"
+    Store = "text"
+    Choices = @(
         @{
             Label = "&Yes"
             Help = "Enable script analysis"

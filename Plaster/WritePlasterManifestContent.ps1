@@ -572,60 +572,138 @@ The replacement text to substitute in place of the original text
 .PARAMETER SubstituteExpand
 Whether to expand variables within the substitute text
 .EXAMPLE
-$MyPlasterContent = @(
+@(
     @{
-        'ContentType' = 'Message'
-        'Message' = 'Building out your module and preparing the environment...'
-        'NoNewLine' = $true
+        ContentType = 'newModuleManifest'
+        Destination = '${PLASTER_PARAM_ModuleName}.psd1'
+        moduleVersion = '${PLASTER_PARAM_ModuleVersion}'
+        rootModule = '${PLASTER_PARAM_ModuleName}.psm1'
+        copyright = '(c) ${PLASTER_Year} ${PLASTER_PARAM_ModuleAuthor}. All rights reserved.'
+        projectURI = '${PLASTER_PARAM_ModuleWebsite}'
+        licenseURI = '${PLASTER_PARAM_ModuleWebsite}/raw/master/license.md'
+        iconURI = '${PLASTER_PARAM_ModuleWebsite}/raw/master/src/other/powershell-project.png'
+        author = '${PLASTER_PARAM_ModuleAuthor}'
+        companyname = '${PLASTER_PARAM_ModuleAuthor}'
+        description = '${PLASTER_PARAM_ModuleDescription}'
+        tags = '${PLASTER_PARAM_ModuleTags}'
+        functionsToExport = '*'
+        aliasesToExport = ''
+        variablesToExport = ''
+        encoding = 'UTF8-NoBOM'
     },
     @{
-        'ContentType' = 'newModuleManifest'
-        'Destination' = '${PLASTER_PARAM_ModuleName}.psd1'
-        'moduleVersion' = '${PLASTER_PARAM_ModuleVersion}'
-        'rootModule' = '${PLASTER_PARAM_ModuleName}.psm1'
-        'copyright' = '(c) 2017 ${PLASTER_PARAM_ModuleAuthor}. All rights reserved.'
-        'projectURI' = '${PLASTER_PARAM_ModuleWebsite}'
-        'licenseURI' = '${PLASTER_PARAM_ModuleWebsite}/raw/master/license.md'
-        'iconURI' = '${PLASTER_PARAM_ModuleWebsite}/raw/master/src/other/powershell-project.png'
-        'author' = '${PLASTER_PARAM_ModuleAuthor}'
-        'companyname' = '${PLASTER_PARAM_ModuleAuthor}'
-        'description' = '${PLASTER_PARAM_ModuleDescription}'
-        'tags' = '${PLASTER_PARAM_tags}'
-        'encoding' = 'UTF8-NoBOM'
+        ContentType = 'file'
+        Source = 'scaffold\.gitignore'
+        Destination = '.gitignore'
     },
     @{
-        'ContentType' = 'file'
-        'Source' = 'scaffold\src\other\*'
-        'Destination' = 'src\${PLASTER_PARAM_OtherModuleSource}'
+        ContentType = 'file'
+        Source = 'scaffold\.gitattributes'
+        Destination = '.gitattributes'
     },
     @{
-        'ContentType' = 'file'
-        'Source' = 'scaffold\src\private\*'
-        'Destination' = 'src\${PLASTER_PARAM_PrivateFunctionSource}'
+        ContentType = 'file'
+        Source = 'scaffold\.vscode\*'
+        Destination = '.vscode'
     },
     @{
-        'ContentType' = 'file'
-        'Source' = 'scaffold\src\public\*'
-        'Destination' = 'src\${PLASTER_PARAM_PublicFunctionSource}'
+        ContentType = 'file'
+        Source = 'scaffold\src\other\*'
+        Destination = 'src\${PLASTER_PARAM_OtherModuleSource}'
     },
     @{
-        'ContentType' = 'templateFile'
-        'Source' = 'scaffold\ModuleName.psm1'
-        'Destination' = '${PLASTER_PARAM_ModuleName}.psm1'
+        ContentType = 'file'
+        Source = 'scaffold\src\private\*'
+        Destination = 'src\${PLASTER_PARAM_PrivateFunctionSource}'
     },
     @{
-        'ContentType' = 'Modify'
-        'Path' = '.vscode\tasks.json'
-        'Encoding' = 'UTF8'
-        'Condition' = '$PLASTER_PARAM_Editor -eq "VSCode"'
-        'ReplaceCondition' = "`$PLASTER_FileContent -notmatch '// Author:'"
-        'Original' = '(?s)^(.*)'
-        'Substitute' = '// Author: $PLASTER_PARAM_FullName`r`n`$1'
-        'SubstituteExpand' = $true
+        ContentType = 'file'
+        Source = 'scaffold\src\public\*'
+        Destination = 'src\${PLASTER_PARAM_PublicFunctionSource}'
     },
     @{
-        'ContentType' = 'Message'
-        'Message' = '-= COMPLETE! =-'
+        ContentType = 'file'
+        Source = 'scaffold\src\tests\*'
+        Destination = 'src\tests'
+    },
+    @{
+        ContentType = 'file'
+        Source = 'scaffold\build\cleanup\*'
+        Destination = 'build\cleanup'
+    },
+    @{
+        ContentType = 'file'
+        Source = 'scaffold\build\dotsource\*'
+        Destination = 'build\dotsource'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\licenses\CreativeCommons.md'
+        Destination = 'License.md'
+        Condition = '$PLASTER_PARAM_ProjectLicense -eq "CreativeCommons"'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\licenses\MIT.md'
+        Destination = 'License.md'
+        Condition = '$PLASTER_PARAM_ProjectLicense -eq "MIT"'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\licenses\Apache.md'
+        Destination = 'License.md'
+        Condition = '$PLASTER_PARAM_ProjectLicense -eq "Apache"'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\licenses\GPL.md'
+        Destination = 'License.md'
+        Condition = '$PLASTER_PARAM_ProjectLicense -eq "GPL"'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\ModuleName.psm1'
+        Destination = '${PLASTER_PARAM_ModuleName}.psm1'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\modulename.build.ps1'
+        Destination = '${PLASTER_PARAM_ModuleName}.build.ps1'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\build\modulename.buildenvironment.ps1'
+        Destination = 'build\${PLASTER_PARAM_ModuleName}.buildenvironment.ps1'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\build\modulename.buildenvironment.json'
+        Destination = 'build\${PLASTER_PARAM_ModuleName}.buildenvironment.json'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\readme.md'
+        Destination = 'Readme.md'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\Build.ps1'
+        Destination = 'Build.ps1'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\Install.ps1'
+        Destination = 'Install.ps1'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\EN-us\*'
+        Destination = 'EN-us'
+    },
+    @{
+        ContentType = 'templateFile'
+        Source = 'scaffold\build\docs\index.md'
+        Destination = 'build\docs\index.md'
     }
 ) | Write-PlasterManifestContent
 .NOTES
