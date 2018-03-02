@@ -68,7 +68,7 @@
             }
             try {
                 Write-Verbose ('$($MyInvocation.MyCommand): Trying to LDAP bind - {0}' -f $server)
-                $adObjects = $searcher.FindAll()
+                $adObjects = $searcher.FindOne()
                 Write-Verbose ('$($MyInvocation.MyCommand): LDAP Server {0} is up (object path = {1})' -f $server, $adObjects.Item(0).Path)
                 $result.Connected = $true
             }
